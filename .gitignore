@@ -1,0 +1,6 @@
+bin/
+obj/
+releases/
+Run.bat
+*.hxproj
+*.hxml
