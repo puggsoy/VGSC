@@ -7,7 +7,7 @@ import systools.Dialogs;
 
 class Main 
 {
-	static private inline var USAGE:String = "Command line usage: VGSC inDir outDir [options]\n    inDir: Path to directory containing files to convert\n    outDir: Path to directory where converted files will be saved";
+	static private inline var USAGE:String = "Command line usage: VGSC inDir outDir\n    inDir: Path to directory containing files to convert\n    outDir: Path to directory where converted files will be saved";
 	
 	static private var _args:Array<String>;
 	
