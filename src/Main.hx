@@ -1,5 +1,7 @@
 package ;
 
+import console.Begin;
+import console.End;
 import haxe.io.Path;
 import sys.FileSystem;
 import systools.Clipboard;
@@ -13,27 +15,15 @@ class Main
 	
 	static function main() 
 	{
-		_args = Sys.args();
-		
-		if (_args.length == 0)
-		{
-			Sys.println(USAGE + "\n");
-			selectFiles();
-		}
-		else
-		if (_args.length == 1)
-		{
-			end(1, USAGE);
-		}
-		else
-		if (_args.length > 1)
-		{
-			parseArgs(_args);
-		}
+		Begin.init();
+		Begin.usage = USAGE;
+		Begin.functions = [selectFiles, null, parseArgs];
+		Begin.parseArgs();
 	}
 	
-	static private function selectFiles()
+	static private function selectFiles(args:Array<String>)
 	{
+		Sys.println(USAGE + "\n");
 		Sys.println("Select the files you wish to convert");
 		
 		var allFilter:FILEFILTERS = { count:1, descriptions:["All Files"], extensions:["*"] };
@@ -41,7 +31,7 @@ class Main
 		
 		if (files == null)
 		{
-			end(2, "No files selected!");
+			End.anyKeyExit(2, "No files selected!");
 			return;
 		}
 		
@@ -51,7 +41,7 @@ class Main
 		
 		if (outDir == null)
 		{
-			end(2, "No folder selected!");
+			End.anyKeyExit(2, "No folder selected!");
 			return;
 		}
 		
@@ -64,7 +54,7 @@ class Main
 		
 		if (!FileSystem.exists(inDir) || !FileSystem.isDirectory(inDir))
 		{
-			end(3, "First argument must be an existing directory");
+			End.anyKeyExit(3, "First argument must be an existing directory");
 			return;
 		}
 		
@@ -74,7 +64,7 @@ class Main
 		
 		if (inFiles.length == 0)
 		{
-			end(3, "First argument must contain files");
+			End.anyKeyExit(3, "First argument must contain files");
 			return;
 		}
 		
@@ -87,7 +77,7 @@ class Main
 		
 		if (!FileSystem.exists(outDir) || !FileSystem.isDirectory(outDir))
 		{
-			end(3, "Second argument must be an existing directory");
+			End.anyKeyExit(3, "Second argument must be an existing directory");
 			return;
 		}
 		
@@ -105,21 +95,6 @@ class Main
 			VGMStream.convert(file, false, outDir);
 		}
 		
-		end(0, "Done");
-	}
-	
-	static private function end(errCode:Int, ?msg:String)
-	{
-		if (msg != null)
-		{
-			Sys.println(msg);
-		}
-		else
-		{
-			Sys.println("Press any key to end...");
-		}
-		
-		Sys.getChar(false);
-		Sys.exit(errCode);
+		End.anyKeyExit(0, "Done");
 	}
 }
