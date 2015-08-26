@@ -8,11 +8,11 @@ import systools.win.Tools;
 
 class VGMStream
 {
-	static private var _exePath:String;
+	static public var exePath(default, default):String;
 	
-	static public function convert(path:String, pipe:Bool, ?outDir:String):WAVE
+	static public function convert(path:String, outDir:String = null):WAVE
 	{
-		if (_exePath == null)
+		if (exePath == null)
 		{
 			Sys.println("Must set path to vgmstream exe!");
 			return null;
@@ -20,36 +20,21 @@ class VGMStream
 		
 		var inFile:String = "\"" + path + "\"";
 		
-		if (pipe)
+		if (outDir == null)
 		{
-			var process:Process = new Process(_exePath, ["-p", inFile]);
+			var process:Process = new Process(exePath, ["-p", "-i", inFile]);
 			
 			var inWav:WAVE = new Reader(process.stdout).read();
 			
 			process.close();
 			return inWav;
 		}
-		else
-		if (outDir != null)
-		{
-			var fileName:String = new Path(path).file;
-			var outFile:String = "\"" + new Path(outDir).toString() + "\\" + fileName + ".wav\"";
-			
-			var result:Int = Tools.createProcess(_exePath, "-o " + outFile + " " + inFile, Sys.getCwd(), false, true);
-		}
+		
+		var fileName:String = new Path(path).file;
+		var outFile:String = "\"" + new Path(outDir).toString() + "\\" + fileName + ".wav\"";
+		
+		var result:Int = Tools.createProcess(exePath, '-i -o $outFile $inFile', Sys.getCwd(), false, true);
 		
 		return null;
 	}
-	
-	static function get_exePath():String 
-	{
-		return _exePath;
-	}
-	
-	static function set_exePath(value:String):String 
-	{
-		return _exePath = value;
-	}
-	
-	static public var exePath(get_exePath, set_exePath):String;
 }

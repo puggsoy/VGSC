@@ -1,10 +1,9 @@
 package ;
 
-import console.Begin;
-import console.End;
+import easyconsole.Begin;
+import easyconsole.End;
 import haxe.io.Path;
 import sys.FileSystem;
-import systools.Clipboard;
 import systools.Dialogs;
 
 class Main 
@@ -21,7 +20,7 @@ class Main
 		Begin.parseArgs();
 	}
 	
-	static private function selectFiles(args:Array<String>)
+	static private function selectFiles()
 	{
 		Sys.println(USAGE + "\n");
 		Sys.println("Select the files you wish to convert");
@@ -48,9 +47,9 @@ class Main
 		convert(files, outDir);
 	}
 	
-	static private function parseArgs(args:Array<String>)
+	static private function parseArgs()
 	{
-		var inDir:String = new Path(args[0]).toString();
+		var inDir:String = new Path(Begin.args[0]).toString();
 		
 		if (!FileSystem.exists(inDir) || !FileSystem.isDirectory(inDir))
 		{
@@ -73,7 +72,7 @@ class Main
 			inFiles[i] = inDir + "\\" + inFiles[i];
 		}
 		
-		var outDir:String = new Path(args[1]).toString();
+		var outDir:String = new Path(Begin.args[1]).toString();
 		
 		if (!FileSystem.exists(outDir) || !FileSystem.isDirectory(outDir))
 		{
@@ -92,7 +91,7 @@ class Main
 		
 		for (file in fileList)
 		{
-			VGMStream.convert(file, false, outDir);
+			VGMStream.convert(file, outDir);
 		}
 		
 		End.anyKeyExit(0, "Done");
