@@ -27,12 +27,14 @@ class VGMStream
 			var inWav:WAVE = new Reader(process.stdout).read();
 			
 			process.close();
+			
 			return inWav;
 		}
 		
 		var fileName:String = new Path(path).file;
 		var outFile:String = "\"" + new Path(outDir).toString() + "\\" + fileName + ".wav\"";
 		
+		Sys.println("----------");
 		var result:Int = Tools.createProcess(exePath, '-i -o $outFile $inFile', Sys.getCwd(), false, true);
 		
 		return null;

@@ -8,6 +8,7 @@ import systools.Dialogs;
 
 class Main 
 {
+	static private inline var TITLE:String = "VGSC v2.1 - by puggsoy (puggsoy.wordpress.com)\nUses vgmstream r1040 - by hcs (www.hcs64.com)\n==========\n";
 	static private inline var USAGE:String = "Command line usage: VGSC inDir outDir\n    inDir: Path to directory containing files to convert\n    outDir: Path to directory where converted files will be saved";
 	
 	static private var _args:Array<String>;
@@ -22,6 +23,7 @@ class Main
 	
 	static private function selectFiles()
 	{
+		Sys.println(TITLE);
 		Sys.println(USAGE + "\n");
 		Sys.println("Select the files you wish to convert");
 		
@@ -94,6 +96,7 @@ class Main
 			VGMStream.convert(file, outDir);
 		}
 		
+		Sys.println("");
 		End.anyKeyExit(0, "Done");
 	}
 }
