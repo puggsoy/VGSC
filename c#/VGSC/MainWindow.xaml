@@ -1,0 +1,27 @@
+﻿<Window x:Class="VGSC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VGSC"
+        mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="VGSC" Height="350" Width="525">
+    <Grid>
+        
+        <DockPanel Width="Auto" LastChildFill="True">
+            <StackPanel DockPanel.Dock="Left" Width="126">
+                <Button x:Name="openBtn" Content="Open" Width="Auto" Height="25" Margin="10, 10" Click="openBtn_Click"/>
+                <Button x:Name="convertBtn" Content="Convert" Width="Auto" Height="25" Margin="10, 10" Click="convertBtn_Click" IsEnabled="False"/>
+            </StackPanel>
+            <ListView ItemsSource="{Binding Path=ConversionItems}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Filename" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+    </Grid>
+</Window>
