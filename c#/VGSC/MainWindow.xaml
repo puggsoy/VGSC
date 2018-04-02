@@ -11,10 +11,10 @@
         
         <DockPanel Width="Auto" LastChildFill="True">
             <StackPanel DockPanel.Dock="Left" Width="126">
-                <Button x:Name="openBtn" Content="Open" Width="Auto" Height="25" Margin="10, 10" Click="openBtn_Click"/>
-                <Button x:Name="convertBtn" Content="Convert" Width="Auto" Height="25" Margin="10, 10" Click="convertBtn_Click" IsEnabled="False"/>
+                <Button x:Name="OpenBtn" Content="Open" Width="Auto" Height="25" Margin="10, 10" Click="OpenBtn_Click"/>
+                <Button x:Name="ConvertBtn" Content="Convert" Width="Auto" Height="25" Margin="10, 10" Click="ConvertBtn_Click" IsEnabled="False"/>
             </StackPanel>
-            <ListView ItemsSource="{Binding Path=ConversionItems}">
+            <ListView ItemsSource="{Binding Path=ItemList}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Filename" DisplayMemberBinding="{Binding Name}"/>

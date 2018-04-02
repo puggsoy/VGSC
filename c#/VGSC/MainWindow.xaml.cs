@@ -14,23 +14,24 @@ namespace VGSC
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<ConversionItem> ConversionItems { get; set; }
+        public ObservableCollection<ConversionItem> ItemList { get; set; }
 
         private string[] filePaths;
         private string outDir;
 
         private int fileIndex;
 
-        private Process process;
+        private Converter converter;
 
         public MainWindow()
         {
-            ConversionItems = new ObservableCollection<ConversionItem>();
+            ItemList = new ObservableCollection<ConversionItem>();
+            converter = new Converter(ConvertDone);
 
             InitializeComponent();
         }
 
-        private void openBtn_Click(object sender, RoutedEventArgs e)
+        private void OpenBtn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Multiselect = true;
@@ -41,18 +42,18 @@ namespace VGSC
             {
                 filePaths = dialog.FileNames;
 
-                ConversionItems.Clear();
+                ItemList.Clear();
 
                 foreach (string s in dialog.SafeFileNames)
                 {
-                    ConversionItems.Add(new ConversionItem { Name = s, Status = "Unconverted" });
+                    ItemList.Add(new ConversionItem { Name = s, Status = "Unconverted" });
                 }
             }
 
-            convertBtn.IsEnabled = ConversionItems.Count > 0;
+            ConvertBtn.IsEnabled = ItemList.Count > 0;
         }
 
-        private void convertBtn_Click(object sender, RoutedEventArgs e)
+        private void ConvertBtn_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
@@ -68,17 +69,7 @@ namespace VGSC
 
         private void ConvertFiles()
         {
-            process = new Process();
-            process.StartInfo.FileName = "vgmstream/vgmstream.exe";
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.UseShellExecute = false;
-            process.EnableRaisingEvents = true;
-            process.Exited += ConvertEnd;
-
             fileIndex = 0;
-
             ConvertStart();
         }
 
@@ -87,27 +78,15 @@ namespace VGSC
             if (fileIndex >= filePaths.Length)
                 return;
 
+            ItemList[fileIndex].Status = "Converting";
+
             string inPath = filePaths[fileIndex];
-            string outPath = Path.Combine(outDir, Path.GetFileName(inPath));
-            outPath = Path.ChangeExtension(outPath, "wav");
-            string args = string.Format("-o \"{0}\" -i \"{1}\"", outPath, inPath);
-
-            ConversionItems[fileIndex].Status = "Converting";
-
-            Console.WriteLine(process.StartInfo.FileName + " " + args);
-            process.StartInfo.Arguments = args;
-            process.Start();
+            converter.Convert(inPath, outDir);
         }
 
-        private void ConvertEnd(object sender, System.EventArgs e)
+        private void ConvertDone(bool success)
         {
-            
-            string output = process.StandardOutput.ReadToEnd();
-            string error = process.StandardError.ReadToEnd();
-
-            bool failed = error.StartsWith("failed");
-
-            ConversionItems[fileIndex].Status = failed ? "Failed" : "Success";
+            ItemList[fileIndex].Status = success ? "Success" : "Failed";
 
             fileIndex++;
             ConvertStart();
@@ -143,10 +122,7 @@ namespace VGSC
 
         protected void OnPropertyChanged(string name)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
